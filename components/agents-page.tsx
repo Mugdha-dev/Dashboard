@@ -33,7 +33,7 @@ export function AgentsPage() {
       name: "Arjun",
       role: "Investment Tracker",
       icon: <TrendingUp className="h-8 w-8" />,
-      gradient: "from-blue-500 to-cyan-600",
+      gradient: "from-cyan-500 to-blue-600",
       status: "active",
       alerts: 1,
       keyData: [
@@ -91,17 +91,17 @@ export function AgentsPage() {
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pt-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-white mb-3">Your AI Financial Team</h2>
-        <p className="text-slate-300">Intelligent agents working 24/7 to optimize your finances</p>
+        <h2 className="text-4xl font-bold text-white mb-3">Your AI Financial Team</h2>
+        <p className="text-slate-300 text-lg">Intelligent agents working 24/7 to optimize your finances</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {agents.map((agent) => (
           <Card
             key={agent.id}
-            className="glass-dark border-slate-700/50 hover:border-slate-600/70 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/10"
+            className="glass-dark border-slate-700/50 hover:border-slate-600/70 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/10 overflow-hidden"
           >
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -181,7 +181,7 @@ export function AgentsPage() {
       {/* Team Performance */}
       <Card className="glass-dark border-slate-700/50">
         <CardHeader>
-          <CardTitle className="text-white">Team Performance This Month</CardTitle>
+          <CardTitle className="text-white text-2xl">Team Performance This Month</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -194,11 +194,11 @@ export function AgentsPage() {
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-2">12</div>
+              <div className="text-3xl font-bold text-cyan-400 mb-2">12</div>
               <div className="text-sm text-slate-400">Optimizations Made</div>
               <div className="flex items-center justify-center mt-2">
-                <CheckCircle className="h-4 w-4 text-blue-400 mr-1" />
-                <span className="text-xs text-blue-400">Across all agents</span>
+                <CheckCircle className="h-4 w-4 text-cyan-400 mr-1" />
+                <span className="text-xs text-cyan-400">Across all agents</span>
               </div>
             </div>
             <div className="text-center">

@@ -3,45 +3,49 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Bell, MapPin, FileText, TrendingUp } from "lucide-react"
+import { AlertTriangle, MapPin, FileText, TrendingUp, Clock } from "lucide-react"
 
 export function SmartAlerts() {
   const alerts = [
     {
-      type: "geo",
+      type: "geo-financial",
       title: "Fuel Price Alert",
-      description: "Avoid Shell station on MG Road - ₹3/L higher than nearby stations",
+      description: "Avoid Shell station on MG Road - 15% higher than nearby stations",
       location: "MG Road, Bangalore",
       icon: <MapPin className="h-4 w-4" />,
-      color: "amber",
-      action: "View Map",
+      color: "from-amber-500 to-orange-500",
+      time: "2 min ago",
     },
     {
       type: "document",
-      title: "Tax Document Ready",
-      description: "Your Form 16 has been auto-categorized and is ready for filing",
+      title: "Investment Document Ready",
+      description: "Your mutual fund statement has been processed and categorized",
+      location: "Portfolio > Documents",
       icon: <FileText className="h-4 w-4" />,
-      color: "blue",
-      action: "View Document",
+      color: "from-blue-500 to-cyan-500",
+      time: "5 min ago",
     },
     {
-      type: "investment",
-      title: "SIP Due Tomorrow",
-      description: "₹10,000 SIP for HDFC Mid-Cap Fund scheduled for tomorrow",
+      type: "trend",
+      title: "Market Opportunity",
+      description: "Tech stocks showing unusual volume - consider rebalancing",
+      location: "Investment Portfolio",
       icon: <TrendingUp className="h-4 w-4" />,
-      color: "emerald",
-      action: "Manage SIP",
+      color: "from-emerald-500 to-teal-500",
+      time: "12 min ago",
     },
   ]
 
   return (
     <Card className="mt-8 glass-dark border-slate-700/50 hover:border-slate-600/70 transition-all duration-300">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2 text-white">
-          <Bell className="h-5 w-5 text-amber-400" />
-          <span>Smart Alerts Feed</span>
-          <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">3 New</Badge>
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center space-x-2 text-white text-xl">
+            <AlertTriangle className="h-6 w-6 text-amber-400" />
+            <span>Smart Alerts Feed</span>
+          </CardTitle>
+          <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">{alerts.length} active</Badge>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -52,35 +56,24 @@ export function SmartAlerts() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">
-                  <div
-                    className={`p-2 rounded-full ${
-                      alert.color === "amber"
-                        ? "bg-amber-500/20 text-amber-400"
-                        : alert.color === "blue"
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-emerald-500/20 text-emerald-400"
-                    }`}
-                  >
-                    {alert.icon}
-                  </div>
+                  <div className={`p-2 rounded-full bg-gradient-to-r ${alert.color} bg-opacity-20`}>{alert.icon}</div>
                   <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h4 className="font-semibold text-white">{alert.title}</h4>
-                      {alert.type === "geo" && (
-                        <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 text-xs">
-                          Geo-Alert
-                        </Badge>
-                      )}
-                    </div>
+                    <h4 className="font-semibold text-white mb-1">{alert.title}</h4>
                     <p className="text-sm text-slate-300 mb-2">{alert.description}</p>
-                    {alert.location && <p className="text-xs text-slate-400">{alert.location}</p>}
+                    <div className="flex items-center space-x-4 text-xs text-slate-400">
+                      <span>{alert.location}</span>
+                      <div className="flex items-center space-x-1">
+                        <Clock className="h-3 w-3" />
+                        <span>{alert.time}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white border-0 text-xs"
                 >
-                  {alert.action}
+                  View
                 </Button>
               </div>
             </div>
