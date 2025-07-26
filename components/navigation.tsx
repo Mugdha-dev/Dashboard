@@ -1,12 +1,7 @@
 "use client"
 
-interface NavigationProps {
-  currentPage: string
-  onPageChange: (page: string) => void
-}
-
-export function Navigation({ currentPage, onPageChange }: NavigationProps) {
-  // Navigation is now handled by the sidebar in the main component
+// Navigation is now handled by the sidebar in the main app/page.tsx
+// This component is no longer needed.
+export function Navigation() {
   return null
 }
-</merged_code>

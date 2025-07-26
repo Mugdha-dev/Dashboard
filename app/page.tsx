@@ -22,16 +22,20 @@ import {
   BarChart3,
   Settings,
   Bell,
+  Folder,
 } from "lucide-react"
+import { AIAssistant } from "@/components/ai-assistant"
 import { PersonaHeader } from "@/components/persona-header"
 import { SmartAlerts } from "@/components/smart-alerts"
 import { AgentsPage } from "@/components/agents-page"
 import { BillManagerPage } from "@/components/bill-manager-page"
 import { NetWorthPage } from "@/components/networth-page"
 import { FinancialChart } from "@/components/financial-chart"
+import { DocumentCenterPage } from "@/components/document-center-page" // New import
 
 export default function HomePage() {
   const [currentPage, setCurrentPage] = useState("home")
+  const [isChatOpen, setIsChatOpen] = useState(false) // State for the AI chat overlay
 
   // Mock user data
   const userData = {
@@ -75,15 +79,17 @@ export default function HomePage() {
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <HomeContent userData={userData} insights={insights} />
+        return <HomeContent userData={userData} insights={insights} onStartChat={() => setIsChatOpen(true)} />
       case "agents":
         return <AgentsPage />
       case "bills":
         return <BillManagerPage />
       case "networth":
         return <NetWorthPage />
+      case "documents": // New case for Document Center
+        return <DocumentCenterPage />
       default:
-        return <HomeContent userData={userData} insights={insights} />
+        return <HomeContent userData={userData} insights={insights} onStartChat={() => setIsChatOpen(true)} />
     }
   }
 
@@ -148,6 +154,19 @@ export default function HomePage() {
             >
               <BarChart3 className="h-5 w-5" />
             </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-10 w-10 rounded-xl transition-all duration-300 ${
+                currentPage === "documents"
+                  ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/30 text-cyan-300"
+                  : "text-slate-400 hover:text-cyan-300 hover:bg-slate-800/50"
+              }`}
+              onClick={() => setCurrentPage("documents")}
+            >
+              <Folder className="h-5 w-5" />
+            </Button>
           </div>
 
           <div className="flex-1" />
@@ -172,8 +191,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Header */}
-      <PersonaHeader persona={userData.persona} description={userData.personaDescription} name={userData.name} />
+      {/* AI Assistant Overlay */}
+      <AIAssistant isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
 
       {/* Main Content */}
       <div className="ml-16 px-6 pb-8">
@@ -183,9 +202,12 @@ export default function HomePage() {
   )
 }
 
-function HomeContent({ userData, insights }: { userData: any; insights: any[] }) {
+function HomeContent({ userData, insights, onStartChat }: { userData: any; insights: any[]; onStartChat: () => void }) {
   return (
     <>
+      {/* Header */}
+      <PersonaHeader persona={userData.persona} description={userData.personaDescription} name={userData.name} />
+
       {/* Top Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="glass-dark border-emerald-500/20 hover:border-emerald-400/40 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/20 group overflow-hidden relative">
@@ -263,7 +285,10 @@ function HomeContent({ userData, insights }: { userData: any; insights: any[] })
                 </p>
               </div>
             </div>
-            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0 shadow-lg hover:shadow-purple-500/25 transition-all duration-300 px-6 py-3">
+            <Button
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0 shadow-lg hover:shadow-purple-500/25 transition-all duration-300 px-6 py-3"
+              onClick={onStartChat}
+            >
               <MessageCircle className="h-5 w-5 mr-2" />
               Start Chat
             </Button>

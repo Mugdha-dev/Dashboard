@@ -5,12 +5,23 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Progress } from "@/components/ui/progress"
-import { TrendingUp, Users, Calculator, ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { TrendingUp, Users, Calculator, ArrowUpRight, ArrowDownRight, Brain, Send } from "lucide-react"
 import { useState } from "react"
+import { Input } from "@/components/ui/input"
 
 export function NetWorthPage() {
   const [timeRange, setTimeRange] = useState("1Y")
   const [forecastYears, setForecastYears] = useState([5])
+  const [monthlyInvestment, setMonthlyInvestment] = useState([15])
+  const [expectedReturn, setExpectedReturn] = useState([12])
+
+  const [chatMessage, setChatMessage] = useState("")
+  const [chatHistory, setChatHistory] = useState([
+    {
+      type: "ai",
+      content: "Hello Priya! I'm your Net Worth AI. Ask me about your financial future, goals, or projections.",
+    },
+  ])
 
   const netWorthData = {
     current: 1250000,
@@ -34,17 +45,51 @@ export function NetWorthPage() {
     topPercentile: 2100000,
   }
 
-  const forecast = {
-    conservative: 1850000,
-    moderate: 2250000,
-    aggressive: 2850000,
+  // Simple forecast calculation based on inputs
+  const calculateForecast = () => {
+    const initialAmount = netWorthData.current
+    const monthlyInvest = monthlyInvestment[0] * 1000 // Convert k to actual amount
+    const annualRate = expectedReturn[0] / 100
+    const numYears = forecastYears[0]
+    const monthlyRate = annualRate / 12
+    const numMonths = numYears * 12
+
+    let futureValue = initialAmount * Math.pow(1 + annualRate, numYears) // Growth on current net worth
+    futureValue += (monthlyInvest * (Math.pow(1 + monthlyRate, numMonths) - 1)) / monthlyRate // Growth on new investments
+
+    return futureValue
+  }
+
+  const projectedNetWorth = calculateForecast()
+
+  const handleChatSend = () => {
+    if (!chatMessage.trim()) return
+
+    setChatHistory((prev) => [...prev, { type: "user", content: chatMessage }])
+
+    // Simulate AI response based on message
+    setTimeout(() => {
+      let aiResponse = "I'm still learning to understand complex financial queries. Can you rephrase?"
+      if (chatMessage.toLowerCase().includes("future")) {
+        aiResponse = `Based on your current trajectory, your projected net worth in ${forecastYears[0]} years is ₹${(projectedNetWorth / 100000).toFixed(1)}L. Would you like to explore different scenarios?`
+      } else if (chatMessage.toLowerCase().includes("goal")) {
+        aiResponse =
+          "To help you with your goals, please tell me what you're aiming for (e.g., 'buy a house', 'retire early')."
+      } else if (chatMessage.toLowerCase().includes("optimize")) {
+        aiResponse =
+          "I can help optimize your finances. Are you looking to optimize investments, reduce expenses, or both?"
+      }
+      setChatHistory((prev) => [...prev, { type: "ai", content: aiResponse }])
+    }, 1000)
+
+    setChatMessage("")
   }
 
   return (
     <div className="space-y-8 pt-8">
       <div className="text-center">
         <h2 className="text-4xl font-bold text-white mb-3">Net Worth Tracker</h2>
-        <p className="text-slate-300 text-lg">Track your financial progress and forecast your future</p>
+        <p className="text-slate-300 text-lg">Speed dial-style tracking with AI-powered forecasts</p>
       </div>
 
       {/* Speed Dial Net Worth */}
@@ -239,26 +284,87 @@ export function NetWorthPage() {
               <span className="text-white font-semibold min-w-0">{forecastYears[0]} years</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-4 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl border border-red-500/20">
-                <div className="text-2xl font-bold text-red-400 mb-2">
-                  ₹{(forecast.conservative / 100000).toFixed(1)}L
-                </div>
-                <div className="text-sm text-slate-400">Conservative (5% growth)</div>
+            <div className="flex items-center space-x-4">
+              <span className="text-slate-300 min-w-0">Monthly Investment:</span>
+              <div className="flex-1 max-w-md">
+                <Slider
+                  value={monthlyInvestment}
+                  onValueChange={setMonthlyInvestment}
+                  max={50}
+                  min={0}
+                  step={1}
+                  className="w-full"
+                />
               </div>
-
-              <div className="text-center p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl border border-blue-500/20">
-                <div className="text-2xl font-bold text-cyan-400 mb-2">₹{(forecast.moderate / 100000).toFixed(1)}L</div>
-                <div className="text-sm text-slate-400">Moderate (8% growth)</div>
-              </div>
-
-              <div className="text-center p-4 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl border border-emerald-500/20">
-                <div className="text-2xl font-bold text-emerald-400 mb-2">
-                  ₹{(forecast.aggressive / 100000).toFixed(1)}L
-                </div>
-                <div className="text-sm text-slate-400">Aggressive (12% growth)</div>
-              </div>
+              <span className="text-white font-semibold min-w-0">₹{monthlyInvestment[0]}k</span>
             </div>
+
+            <div className="flex items-center space-x-4">
+              <span className="text-slate-300 min-w-0">Expected Return:</span>
+              <div className="flex-1 max-w-md">
+                <Slider
+                  value={expectedReturn}
+                  onValueChange={setExpectedReturn}
+                  max={20}
+                  min={1}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+              <span className="text-white font-semibold min-w-0">{expectedReturn[0]}%</span>
+            </div>
+
+            <div className="text-center p-6 glass-dark rounded-2xl border border-slate-600/30">
+              <div className="text-4xl font-bold text-emerald-400 mb-2">
+                ₹{(projectedNetWorth / 100000).toFixed(1)}L
+              </div>
+              <p className="text-sm text-slate-400 mb-4">Projected Net Worth in {forecastYears[0]} years</p>
+              <Button className="bg-gradient-to-r from-emerald-600 to-blue-600 text-white border-0">
+                Create Investment Plan
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* AI Chatbot for Net Worth */}
+      <Card className="glass-dark border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-white text-xl">
+            <Brain className="h-6 w-6 text-purple-400" />
+            <span>Net Worth AI Assistant</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64 overflow-y-auto p-4 bg-slate-800/50 rounded-lg mb-4 border border-slate-700/50">
+            {chatHistory.map((msg, index) => (
+              <div key={index} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"} mb-2`}>
+                <div
+                  className={`max-w-[70%] p-3 rounded-lg ${
+                    msg.type === "user"
+                      ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                      : "bg-slate-700/50 text-slate-200"
+                  }`}
+                >
+                  <p className="text-sm">{msg.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex space-x-2">
+            <Input
+              placeholder="Ask about your financial future..."
+              value={chatMessage}
+              onChange={(e) => setChatMessage(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleChatSend()}
+              className="bg-slate-800/50 border-slate-600/30 text-white placeholder:text-slate-400"
+            />
+            <Button
+              onClick={handleChatSend}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
           </div>
         </CardContent>
       </Card>

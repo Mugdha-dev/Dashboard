@@ -4,176 +4,275 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
-import { Calendar, CreditCard, Home, Zap, Wifi, Car, AlertCircle, CheckCircle, Clock } from "lucide-react"
+import {
+  Calendar,
+  CreditCard,
+  Zap,
+  Wifi,
+  Car,
+  Home,
+  Smartphone,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Bell,
+} from "lucide-react"
 
 export function BillManagerPage() {
-  const bills = [
+  const upcomingBills = [
     {
       id: 1,
-      name: "Rent",
-      amount: 25000,
-      dueDate: "2024-01-01",
-      category: "Housing",
-      icon: <Home className="h-5 w-5" />,
-      color: "from-blue-500 to-cyan-500",
-      status: "paid",
+      name: "Credit Card Payment",
+      amount: 15420,
+      dueDate: "2024-01-28",
+      category: "Credit Card",
+      icon: <CreditCard className="h-5 w-5" />,
+      gradient: "from-red-500 to-pink-600",
+      status: "due",
       autopay: true,
+      daysLeft: 3,
     },
     {
       id: 2,
-      name: "Electricity",
-      amount: 3500,
-      dueDate: "2024-01-05",
+      name: "Electricity Bill",
+      amount: 2850,
+      dueDate: "2024-01-30",
       category: "Utilities",
       icon: <Zap className="h-5 w-5" />,
-      color: "from-amber-500 to-yellow-500",
-      status: "due",
-      autopay: false,
+      gradient: "from-amber-500 to-orange-600",
+      status: "upcoming",
+      autopay: true,
+      daysLeft: 5,
     },
     {
       id: 3,
-      name: "Internet",
-      amount: 1200,
-      dueDate: "2024-01-10",
+      name: "Internet & Cable",
+      amount: 1299,
+      dueDate: "2024-02-02",
       category: "Utilities",
       icon: <Wifi className="h-5 w-5" />,
-      color: "from-purple-500 to-pink-500",
+      gradient: "from-blue-500 to-cyan-600",
       status: "upcoming",
-      autopay: true,
+      autopay: false,
+      daysLeft: 8,
     },
     {
       id: 4,
-      name: "Credit Card",
-      amount: 8500,
-      dueDate: "2024-01-15",
-      category: "Credit",
-      icon: <CreditCard className="h-5 w-5" />,
-      color: "from-red-500 to-pink-500",
-      status: "due",
+      name: "Home Rent",
+      amount: 25000,
+      dueDate: "2024-02-01",
+      category: "Housing",
+      icon: <Home className="h-5 w-5" />,
+      gradient: "from-purple-500 to-indigo-600",
+      status: "upcoming",
       autopay: false,
+      daysLeft: 7,
     },
     {
       id: 5,
-      name: "Car EMI",
-      amount: 15000,
-      dueDate: "2024-01-20",
-      category: "EMI",
-      icon: <Car className="h-5 w-5" />,
-      color: "from-emerald-500 to-teal-500",
+      name: "Mobile Bill",
+      amount: 899,
+      dueDate: "2024-02-05",
+      category: "Subscriptions",
+      icon: <Smartphone className="h-5 w-5" />,
+      gradient: "from-emerald-500 to-teal-600",
       status: "upcoming",
       autopay: true,
+      daysLeft: 10,
+    },
+    {
+      id: 6,
+      name: "Car Loan EMI",
+      amount: 12000,
+      dueDate: "2024-02-10",
+      category: "Loans",
+      icon: <Car className="h-5 w-5" />,
+      gradient: "from-gray-500 to-slate-600",
+      status: "upcoming",
+      autopay: true,
+      daysLeft: 15,
     },
   ]
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "paid":
-        return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
-      case "due":
-        return "bg-red-500/20 text-red-300 border-red-500/30"
-      case "upcoming":
-        return "bg-blue-500/20 text-blue-300 border-blue-500/30"
-      default:
-        return "bg-slate-500/20 text-slate-300 border-slate-500/30"
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "paid":
-        return <CheckCircle className="h-4 w-4" />
-      case "due":
-        return <AlertCircle className="h-4 w-4" />
-      case "upcoming":
-        return <Clock className="h-4 w-4" />
-      default:
-        return <Clock className="h-4 w-4" />
-    }
-  }
+  const totalUpcoming = upcomingBills.reduce((sum, bill) => sum + bill.amount, 0)
+  const autopayCount = upcomingBills.filter((bill) => bill.autopay).length
+  const dueThisMonth = upcomingBills.filter((bill) => bill.status === "due").length
 
   return (
     <div className="space-y-8 pt-8">
       <div className="text-center">
         <h2 className="text-4xl font-bold text-white mb-3">Bill Manager</h2>
-        <p className="text-slate-300 text-lg">Smart bill tracking and autopay management</p>
+        <p className="text-slate-300 text-lg">Dark calendar UI with intelligent bill tracking</p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="glass-dark border-slate-700/50 hover:border-slate-600/70 transition-all duration-300">
-          <CardContent className="p-6 text-center">
-            <div className="text-2xl font-bold text-white mb-2">₹53.2k</div>
-            <div className="text-sm text-slate-400">Total This Month</div>
+        <Card className="glass-dark border-red-500/30 hover:border-red-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-red-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-red-300/80 text-sm font-medium">Bills Due</p>
+                <p className="text-3xl font-bold text-white mb-2">{dueThisMonth}</p>
+                <p className="text-sm text-red-300/80">bills pending</p>
+              </div>
+              <div className="p-4 bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-full">
+                <AlertCircle className="h-8 w-8 text-red-400" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-dark border-red-500/20 hover:border-red-400/40 transition-all duration-300">
-          <CardContent className="p-6 text-center">
-            <div className="text-2xl font-bold text-red-400 mb-2">2</div>
-            <div className="text-sm text-slate-400">Bills Due</div>
+        <Card className="glass-dark border-emerald-500/30 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-emerald-300/80 text-sm font-medium">Autopay Setup</p>
+                <p className="text-3xl font-bold text-white mb-2">
+                  {((autopayCount / upcomingBills.length) * 100).toFixed(0)}%
+                </p>
+                <p className="text-sm text-emerald-300/80">
+                  {autopayCount} of {upcomingBills.length} bills automated
+                </p>
+              </div>
+              <div className="p-4 bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 rounded-full">
+                <CheckCircle className="h-8 w-8 text-emerald-400" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-dark border-emerald-500/20 hover:border-emerald-400/40 transition-all duration-300">
-          <CardContent className="p-6 text-center">
-            <div className="text-2xl font-bold text-emerald-400 mb-2">60%</div>
-            <div className="text-sm text-slate-400">Autopay Coverage</div>
+        <Card className="glass-dark border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-blue-300/80 text-sm font-medium">Total Upcoming</p>
+                <p className="text-3xl font-bold text-white mb-2">₹{(totalUpcoming / 1000).toFixed(1)}k</p>
+                <p className="text-sm text-blue-300/80">for next 30 days</p>
+              </div>
+              <div className="p-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-full">
+                <Calendar className="h-8 w-8 text-blue-400" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-dark border-blue-500/20 hover:border-blue-400/40 transition-all duration-300">
-          <CardContent className="p-6 text-center">
-            <div className="text-2xl font-bold text-blue-400 mb-2">3</div>
-            <div className="text-sm text-slate-400">Upcoming Bills</div>
+        <Card className="glass-dark border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-purple-300/80 text-sm font-medium">Smart Reminders</p>
+                <p className="text-3xl font-bold text-white mb-2">5</p>
+                <p className="text-sm text-purple-300/80">Active notifications</p>
+              </div>
+              <div className="p-4 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-full">
+                <Bell className="h-8 w-8 text-purple-400" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Bills Calendar Timeline */}
+      {/* AI Suggestion */}
+      <Card className="glass-dark border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full animate-pulse">
+                <Calendar className="h-6 w-6 text-purple-300" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white mb-1">💡 AI Cash Flow Optimization</h3>
+                <p className="text-purple-200/80">
+                  Move your rent payment to the 2nd of each month (after salary credit) to improve cash flow by 15%.
+                </p>
+              </div>
+            </div>
+            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0">
+              Apply Suggestion
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Dark Calendar Timeline */}
       <Card className="glass-dark border-slate-700/50">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-white text-xl">
-            <Calendar className="h-6 w-6 text-cyan-400" />
-            <span>Bills Timeline</span>
+          <CardTitle className="flex items-center space-x-2 text-white">
+            <Calendar className="h-5 w-5 text-purple-400" />
+            <span>Bills Timeline - January 2024</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {bills.map((bill) => (
-              <div
-                key={bill.id}
-                className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-slate-800/50 to-slate-700/30 border border-slate-600/30 hover:border-slate-500/50 transition-all duration-300"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className={`p-3 rounded-xl bg-gradient-to-r ${bill.color} bg-opacity-20`}>{bill.icon}</div>
-                  <div>
-                    <h4 className="font-semibold text-white">{bill.name}</h4>
-                    <p className="text-sm text-slate-400">{bill.category}</p>
+          <div className="space-y-6">
+            {upcomingBills.map((bill, index) => (
+              <div key={bill.id} className="relative">
+                {/* Timeline connector */}
+                {index < upcomingBills.length - 1 && (
+                  <div className="absolute left-6 top-16 w-0.5 h-12 bg-gradient-to-b from-slate-600 to-slate-700"></div>
+                )}
+
+                <div
+                  className={`p-6 rounded-2xl border transition-all duration-300 hover:shadow-xl ${
+                    bill.status === "due"
+                      ? "glass-dark border-red-500/40 hover:border-red-400/60 hover:shadow-red-500/20"
+                      : "glass-dark border-slate-600/40 hover:border-slate-500/60"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      {/* Timeline dot */}
+                      <div
+                        className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          bill.status === "due"
+                            ? "bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30"
+                            : "bg-gradient-to-br from-slate-600 to-slate-700"
+                        }`}
+                      >
+                        {bill.status === "due" ? (
+                          <AlertCircle className="h-6 w-6 text-white" />
+                        ) : (
+                          <Clock className="h-6 w-6 text-slate-300" />
+                        )}
+                      </div>
+
+                      <div className="flex items-center space-x-4">
+                        <div className={`p-3 rounded-xl bg-gradient-to-br ${bill.gradient} shadow-lg`}>{bill.icon}</div>
+                        <div>
+                          <h4 className="font-bold text-white text-lg">{bill.name}</h4>
+                          <p className="text-slate-400">{bill.category}</p>
+                          <p className="text-sm text-slate-500">Due {new Date(bill.dueDate).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white mb-2">₹{bill.amount.toLocaleString()}</div>
+                      <div className="flex items-center space-x-2 mb-3">
+                        {bill.daysLeft <= 3 ? (
+                          <Badge className="bg-red-500/20 text-red-300 border-red-500/30">
+                            Due in {bill.daysLeft} days
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-slate-600/20 text-slate-300 border-slate-600/30">
+                            {bill.daysLeft} days left
+                          </Badge>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-end space-x-3">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-slate-400">Autopay:</span>
+                          <Switch checked={bill.autopay} />
+                        </div>
+                        <Button
+                          size="sm"
+                          className={`bg-gradient-to-r ${bill.gradient} text-white border-0 hover:opacity-90`}
+                        >
+                          Pay Now
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex items-center space-x-6">
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-white">₹{bill.amount.toLocaleString()}</div>
-                    <div className="text-sm text-slate-400">Due: {new Date(bill.dueDate).toLocaleDateString()}</div>
-                  </div>
-
-                  <Badge className={`${getStatusColor(bill.status)} flex items-center space-x-1`}>
-                    {getStatusIcon(bill.status)}
-                    <span className="capitalize">{bill.status}</span>
-                  </Badge>
-
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-slate-400">Autopay</span>
-                    <Switch checked={bill.autopay} />
-                  </div>
-
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white border-0"
-                  >
-                    {bill.status === "due" ? "Pay Now" : "View"}
-                  </Button>
                 </div>
               </div>
             ))}
@@ -181,71 +280,42 @@ export function BillManagerPage() {
         </CardContent>
       </Card>
 
-      {/* Category Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-dark border-slate-700/50">
-          <CardHeader>
-            <CardTitle className="text-white text-xl">Category Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { category: "Housing", amount: 25000, percentage: 47, color: "bg-blue-500" },
-                { category: "EMI", amount: 15000, percentage: 28, color: "bg-emerald-500" },
-                { category: "Credit", amount: 8500, percentage: 16, color: "bg-red-500" },
-                { category: "Utilities", amount: 4700, percentage: 9, color: "bg-amber-500" },
-              ].map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-                    <span className="text-slate-300">{item.category}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-white font-semibold">₹{item.amount.toLocaleString()}</div>
-                    <div className="text-sm text-slate-400">{item.percentage}%</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-dark border-slate-700/50">
-          <CardHeader>
-            <CardTitle className="text-white text-xl">Smart Recommendations</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl border border-emerald-500/20">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-400" />
-                  <span className="text-sm font-medium text-emerald-300">Optimization Opportunity</span>
-                </div>
-                <p className="text-sm text-slate-300">
-                  Enable autopay for electricity and credit card bills to save ₹200/month in late fees
-                </p>
+      {/* Bill Categories */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          {
+            name: "Rent",
+            icon: <Home className="h-6 w-6" />,
+            amount: "₹25k",
+            gradient: "from-purple-500 to-indigo-600",
+          },
+          { name: "EMI", icon: <Car className="h-6 w-6" />, amount: "₹18k", gradient: "from-blue-500 to-cyan-600" },
+          {
+            name: "Utilities",
+            icon: <Zap className="h-6 w-6" />,
+            amount: "₹4.2k",
+            gradient: "from-amber-500 to-orange-600",
+          },
+          {
+            name: "Subscriptions",
+            icon: <Smartphone className="h-6 w-6" />,
+            amount: "₹2.1k",
+            gradient: "from-emerald-500 to-teal-600",
+          },
+        ].map((category, index) => (
+          <Card
+            key={index}
+            className="glass-dark border-slate-700/50 hover:border-slate-600/70 transition-all duration-300 hover:shadow-xl cursor-pointer"
+          >
+            <CardContent className="p-6 text-center">
+              <div className={`p-4 rounded-2xl bg-gradient-to-br ${category.gradient} shadow-lg mx-auto w-fit mb-4`}>
+                {category.icon}
               </div>
-
-              <div className="p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl border border-blue-500/20">
-                <div className="flex items-center space-x-2 mb-2">
-                  <AlertCircle className="h-4 w-4 text-blue-400" />
-                  <span className="text-sm font-medium text-blue-300">Cash Flow Tip</span>
-                </div>
-                <p className="text-sm text-slate-300">
-                  Move rent payment to 5th of month to align with salary credit date
-                </p>
-              </div>
-
-              <div className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-500/20">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Zap className="h-4 w-4 text-purple-400" />
-                  <span className="text-sm font-medium text-purple-300">Smart Suggestion</span>
-                </div>
-                <p className="text-sm text-slate-300">Consider bundling internet and mobile plans to save ₹500/month</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <h3 className="font-bold text-white mb-2">{category.name}</h3>
+              <p className="text-2xl font-bold text-slate-300">{category.amount}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   )
